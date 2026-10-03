@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+
+    <title>ESP32 LED Control</title>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin-top: 80px;
+        }
+
+        h1 {
+            margin-bottom: 30px;
+        }
+
+        input {
+            padding: 12px;
+            width: 250px;
+            font-size: 16px;
+            margin-bottom: 20px;
+        }
+
+        button {
+            padding: 15px 40px;
+            font-size: 18px;
+            margin: 10px;
+            cursor: pointer;
+        }
+
+        #status {
+            margin-top: 25px;
+            font-size: 20px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <h1>ESP32-C3 LED Control</h1>
+
+    <input
+        id="espIP"
+        type="text"
+        placeholder="ESP32 IP address"
+        value="192.168.1.50"
+    >
+
+    <br>
+
+    <button onclick="setLED('on')">
+        ON
+    </button>
+
+    <button onclick="setLED('off')">
+        OFF
+    </button>
+
+    <div id="status">
+        Status: Unknown
+    </div>
+
+    <script>
+
+        async function setLED(state)
+        {
+            const ip = document.getElementById("espIP").value;
+
+            const url = `http://${ip}/led/${state}`;
+
+            try
+            {
+                const response = await fetch(url);
+
+                if (!response.ok)
+                {
+                    throw new Error("ESP32 returned an error");
+                }
+
+                const result = await response.text();
+
+                document.getElementById("status").innerText =
+                    "Status: " + result;
+            }
+            catch (error)
+            {
+                document.getElementById("status").innerText =
+                    "Connection failed";
+
+                console.error(error);
+            }
+        }
+
+    </script>
+
+</body>
+</html>
