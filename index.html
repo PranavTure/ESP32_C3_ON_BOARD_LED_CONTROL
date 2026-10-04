@@ -1,99 +1,54 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <meta charset="UTF-8">
-
     <title>ESP32 LED Control</title>
-
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            text-align: center;
-            margin-top: 80px;
-        }
-
-        h1 {
-            margin-bottom: 30px;
-        }
-
-        input {
-            padding: 12px;
-            width: 250px;
-            font-size: 16px;
-            margin-bottom: 20px;
-        }
-
-        button {
-            padding: 15px 40px;
-            font-size: 18px;
-            margin: 10px;
-            cursor: pointer;
-        }
-
-        #status {
-            margin-top: 25px;
-            font-size: 20px;
-        }
-    </style>
 </head>
 
 <body>
 
-    <h1>ESP32-C3 LED Control</h1>
+<h2>ESP32 LED Control</h2>
 
-    <input
-        id="espIP"
-        type="text"
-        placeholder="ESP32 IP address"
-        value="192.168.1.50"
-    >
+<input id="ip" placeholder="ESP32 IP address">
 
-    <br>
+<br><br>
 
-    <button onclick="setLED('on')">
-        ON
-    </button>
+<button onclick="ledOn()">ON</button>
+<button onclick="ledOff()">OFF</button>
 
-    <button onclick="setLED('off')">
-        OFF
-    </button>
+<p id="status">Status: --</p>
 
-    <div id="status">
-        Status: Unknown
-    </div>
+<script>
 
-    <script>
+function getIP()
+{
+    return document.getElementById("ip").value.trim();
+}
 
-        async function setLED(state)
-        {
-            const ip = document.getElementById("espIP").value;
+function ledOn()
+{
+    fetch("http://" + getIP() + "/led/on")
+        .then(response => response.text())
+        .then(data => {
+            document.getElementById("status").innerText = data;
+        })
+        .catch(error => {
+            document.getElementById("status").innerText = "Connection failed";
+        });
+}
 
-            const url = `http://${ip}/led/${state}`;
+function ledOff()
+{
+    fetch("http://" + getIP() + "/led/off")
+        .then(response => response.text())
+        .then(data => {
+            document.getElementById("status").innerText = data;
+        })
+        .catch(error => {
+            document.getElementById("status").innerText = "Connection failed";
+        });
+}
 
-            try
-            {
-                const response = await fetch(url);
-
-                if (!response.ok)
-                {
-                    throw new Error("ESP32 returned an error");
-                }
-
-                const result = await response.text();
-
-                document.getElementById("status").innerText =
-                    "Status: " + result;
-            }
-            catch (error)
-            {
-                document.getElementById("status").innerText =
-                    "Connection failed";
-
-                console.error(error);
-            }
-        }
-
-    </script>
+</script>
 
 </body>
 </html>
