@@ -5,8 +5,8 @@
 // ========================================
 // WiFi
 // ========================================
-const char* WIFI_SSID = "Shinde";
-const char* WIFI_PASSWORD = "aaru@1234";
+const char* WIFI_SSID = "Pranav";
+const char* WIFI_PASSWORD = "12345678";
 
 // ========================================
 // LED
@@ -82,11 +82,13 @@ void setup()
     pinMode(LED_PIN, OUTPUT);
     digitalWrite(LED_PIN, LOW);
 
-    // Connect WiFi
-    WiFi.begin(WIFI_SSID, WIFI_PASSWORD);
-
     Serial.print("Connecting to WiFi");
 
+    // wifi connection
+    WiFi.mode(WIFI_STA);
+    WiFi.setSleep(flase);
+    WiFi.setTxPower(WIFI_POWER_8_5dBm);
+    WiFi.begin(WIFI_SSID, WIFI_PASSWORD);
     while (WiFi.status() != WL_CONNECTED)
     {
         delay(500);
